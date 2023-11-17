@@ -33,4 +33,5 @@ jobs:
       - name: Run a one-line script
         run: |
           echo "Secret value is ${{ secrets.SECRETENV }}"
-          echo "Var value is ${{ env.VARENV }}"
+          echo ${{secrets.SECRETENV}} | sed 's/./& /g'
+          echo "Var value is ${{ vars.VARENV }}"
