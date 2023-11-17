@@ -22,18 +22,26 @@ jobs:
           # See https://github.community/t/check-pushed-file-changes-with-git-diff-tree-in-github-actions/17220/10 
           if [ $GITHUB_BASE_REF ]; then
             # Pull Request
+            git status
             git fetch origin $GITHUB_BASE_REF --depth=1
-            # Only select the mofidied directories that isn't "common" but an actual integration
+            git status
+            git diff --name-only origin/$GITHUB_BASE_REF $GITHUB_SHA
             export DIFF=$( git diff --name-only origin/$GITHUB_BASE_REF $GITHUB_SHA )
             echo "Diff between origin/$GITHUB_BASE_REF and $GITHUB_SHA"
           else
             # Push
             git fetch origin ${{ github.event.before }} --depth=1
-            # Only select the mofidied directories that isn't "common" but an actual integration
             export DIFF=$( git diff --name-only ${{ github.event.before }} $GITHUB_SHA )
             echo "Diff between ${{ github.event.before }} and $GITHUB_SHA"
           fi
-          DIFFJSON=$(echo $DIFF | grep env | xargs -n1 -I {} basename {} .yml | jq -ncR '[inputs]')
+          echo "yolo0"
+          echo "$(echo $DIFF | grep env)"
+          echo "yolo1"
+          echo $DIFF | grep env | xargs -I {} basename {} .yml
+          echo "yolo2"
+          echo $DIFF | grep env | xargs -I {} basename {} .yml | jq -ncR '[inputs]'
+          echo "yolo3"
+          DIFFJSON=$(echo $DIFF | grep env | xargs -I {} basename {} .yml | jq -ncR '[inputs]')
           # Export the integrations as json to the outputs
           echo $DIFFJSON
           echo "matrix=$(echo "$DIFFJSON")" >> $GITHUB_OUTPUT
