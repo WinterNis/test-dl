@@ -24,8 +24,8 @@ jobs:
             # Pull Request
             git fetch origin $GITHUB_BASE_REF --depth=1
             # Only select the mofidied directories that isn't "common" but an actual integration
-            export DIFF=$( git diff --name-only origin/$GITHUB_BASE_REF $GITHUB_SHA )
-            echo "Diff between origin/$GITHUB_BASE_REF and $GITHUB_SHA"
+            export DIFF=$( git diff --name-only origin/$GITHUB_BASE_REF ${{ github.event.after }} )
+            echo "Diff between origin/$GITHUB_BASE_REF and ${{ github.event.after }}"
           else
             # Push
             git fetch origin ${{ github.event.before }} --depth=1
