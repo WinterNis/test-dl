@@ -1,0 +1,13 @@
+serverBlock: |-
+  server {
+    listen 0.0.0.0:8080;
+    location / {
+      return 200 "hello cluster2 app2 custom!";
+    }
+  }
+
+service:
+  type: NodePort
+  nodePorts:
+    http: 31022
+    https: 31422

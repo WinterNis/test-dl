@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: subapp2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      deployment: subapp2
+  template:
+    metadata:
+      labels:
+        deployment: subapp2
+    spec:
+      containers:
+        - name: the-container
+          image: monopole/hello:1
+          command: ["/hello", "--port=8080"]
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ALT_GREETING
+              valueFrom:
+                configMapKeyRef:
+                  name: subapp2
+                  key: altGreeting
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: subapp2
+spec:
+  selector:
+    deployment: subapp2
+  type: NodePort
+  ports:
+    - protocol: TCP
+      nodePort: 31014
+      port: 8080
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: subapp2
+data:
+  altGreeting: "Good Morning cluster1 subapp2"
